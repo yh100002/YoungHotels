@@ -1,0 +1,84 @@
+﻿@model Young.App.CQRS.Query.HotelsByIDDateQuery
+
+<h1>Hotels</h1>
+
+<div>       
+        @{
+            var hotelList = new List<SelectListItem>();
+            var reportList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text="HtmlView",Value="1"},
+                new SelectListItem{ Text="JsonView",Value="2"},
+                new SelectListItem{ Text="Excel Download",Value="3"}
+            };
+        }
+
+        @using (Ajax.BeginForm("HotelsList", "Hotels", new AjaxOptions
+        {
+            HttpMethod = "Get",
+            UpdateTargetId = "hotels",
+            OnSuccess = "Success"
+        }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.DropDownListFor(x=>x.ReportMode, reportList, new { @id = "reportList" })
+            @Html.DropDownList("Hotels", hotelList, new { @id="hotelsList"})
+            @Html.EditorFor(x => x.HotelID, new { @id = "hotelID" })
+            @Html.TextBoxFor(m => m.From, "{0:yyyy-MM-dd HH:mm:ss}", new { @id = "from" })
+            @Html.TextBoxFor(m => m.To, "{0:yyyy-MM-dd HH:mm:ss}", new { @id = "to" })
+            <input type="submit" value="Query" />
+        }
+        <hr />
+        <div id="hotels">
+        </div>
+</div>
+
+@section scripts
+{
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">    
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="~/scripts/Hotels.js"></script>
+
+    <script type="text/javascript">
+        $("#from").datepicker();
+        $("#to").datepicker();
+
+        $('#hotelsList').on('change', function () {
+            console.log("onchange");              
+            $('#HotelID').val($('#hotelsList option:selected').val());
+        });
+
+        function Success(data)
+        {
+            console.log("Success");
+        };
+
+        $(document).ready(function () {
+            console.log("ready!");
+
+
+
+            $.ajax({
+                type: "GET",
+                url: '/Hotels/InitHotelList',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result)
+                {
+                    console.log(result);
+                    $.each(result, function (i) { 
+                        var item = result[i];
+                        $.each(item, function (h) {
+                            console.log(item[h].hotel.name);
+                            $('#hotelsList').append($('<option>', { value: item[h].hotel.hotelID }).text(item[h].hotel.name)); 
+                        });
+                    });
+                }                
+            });
+        });
+
+    </script>
+}
