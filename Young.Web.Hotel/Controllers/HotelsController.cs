@@ -53,7 +53,7 @@ namespace Young.Web.Hotel.Controllers
                 case 1://HTMLVIEW
                     return PartialView("HotelsListHTMLView", result);
                 case 2://JSONVIEW
-                    return Json(JsonConvert.SerializeObject(result), JsonRequestBehavior.AllowGet);
+                    return PartialView("HotelsListJSONView", result);
                 case 3://EXCEL DOWNLOAD
                     {
                         string json = JsonConvert.SerializeObject(result);                       

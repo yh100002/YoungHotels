@@ -1,0 +1,8 @@
+﻿@model Young.App.CQRS.QueryResult.HotelsByIDDateQueryResult
+
+<pre id="json-renderer"></pre>
+
+<script type="text/javascript">
+    var data = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model)))
+    $('#json-renderer').jsonViewer(data, { collapsed: false, withQuotes: true });
+</script>
