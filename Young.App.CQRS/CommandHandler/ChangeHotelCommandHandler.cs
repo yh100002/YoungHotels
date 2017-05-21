@@ -23,15 +23,7 @@ namespace Young.App.CQRS.CommandHandler
 
         public void Execute(ChangeHotelCommand command)
         {
-            if (command == null) { throw new ArgumentNullException("command"); }
-            /*
-            if (string.IsNullOrWhiteSpace(command.TaskId)) { throw new ArgumentException("Id is not specified", "command"); }
-
-            var task = _taskRepository.All().Single(x => x.Id == command.TaskId);
-            task.IsCompleted = command.IsCompleted;
-            task.LastUpdated = command.UpdatedOn;
-            */
-            //_hotelsRepository.Update(task);
+            if (command == null) { throw new ArgumentNullException("command"); }          
         }
 
     }
