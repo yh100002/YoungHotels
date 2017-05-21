@@ -41,7 +41,7 @@ namespace Young.App.CQRS.QueryHandler
                 }
                 else
                 {
-                    var hotels = _hotelsRepository.Where(h => h.hotel.hotelID == query.HotelID).ToList();
+                    var hotels = _hotelsRepository.All().Where(h => h.hotel.hotelID == query.HotelID).ToList();
 
                     foreach (var hotel in hotels)
                     {
