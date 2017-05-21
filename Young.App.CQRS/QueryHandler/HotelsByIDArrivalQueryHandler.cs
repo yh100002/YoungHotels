@@ -27,21 +27,27 @@ namespace Young.App.CQRS.QueryHandler
         public HotelsByIDDateQueryResult Retrieve(HotelsByIDArrivalQuery query)
         {
             HotelsByIDDateQueryResult result = new HotelsByIDDateQueryResult();
-
-            var hotels = _hotelsRepository.Where(h => h.hotel.hotelID == query.HotelID).ToList();
-
-            foreach (var hotel in hotels)
+            try
             {
-                var rates = hotel.hotelRates.Where(r => Tools.IsBetween(r.targetDay, query.ArrivalDate)).ToList();
+                var hotels = _hotelsRepository.Where(h => h.hotel.hotelID == query.HotelID).ToList();
 
-                hotel.hotelRates.Clear();
+                foreach (var hotel in hotels)
+                {
+                    var rates = hotel.hotelRates.Where(r => Tools.IsBetween(r.targetDay, query.ArrivalDate)).ToList();
 
-                hotel.hotelRates = rates;
+                    hotel.hotelRates.Clear();
+
+                    hotel.hotelRates = rates;
+                }
+
+                result.Hotels = hotels;
+
+                return result;
             }
-
-            result.Hotels = hotels;
-
-            return result;
+            catch(Exception)
+            {
+                return result;
+            }            
         }
 
         

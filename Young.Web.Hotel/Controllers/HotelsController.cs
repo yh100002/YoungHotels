@@ -16,6 +16,7 @@ using System.Data;
 
 namespace Young.Web.Hotel.Controllers
 {
+    [HandleError()]
     public class HotelsController : Controller
     {
         private readonly IQueryDispatcher _queryDispatcher;
@@ -75,18 +76,19 @@ namespace Young.Web.Hotel.Controllers
                 default:
                     return PartialView("HotelsListHTMLView", result);                    
             };            
-        }       
+        }              
 
         [HttpGet]
-        [Route("Hotels/SearchAPI")]
-        public JsonResult SearchAPI(int id,string dt)
+        [Route("api/Ratings/{hotelid:int}/{date:datetime:regex(\\d{4}-\\d{2}-\\d{2})}")]
+        [Route("api/Ratings/{hotelid:int}/{*date:datetime:regex(\\d{4}/\\d{2}/\\d{2})}")]
+        public JsonResult Ratings(int hotelid,DateTime date)
         {
             HotelsByIDArrivalQuery query = new HotelsByIDArrivalQuery()
             {
-                HotelID = id,
-                ArrivalDate = dt
+                HotelID = hotelid,
+                ArrivalDate = date.ToString()
             };
-            
+
             var result = _queryDispatcher.Dispatch<HotelsByIDArrivalQuery, HotelsByIDDateQueryResult>(query);
             return Json(JsonConvert.SerializeObject(result), JsonRequestBehavior.AllowGet);
         }
@@ -94,6 +96,43 @@ namespace Young.Web.Hotel.Controllers
         public ActionResult Download()
         {
             return File((string)this.TempData["DownloadFileName"], (string)this.TempData["DownloadContentType"], Path.GetFileName((string)this.TempData["DownloadFileName"]));
+        }
+
+        private bool IsAjax(ExceptionContext filterContext)
+        {
+            return filterContext.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        }
+        protected override void OnException(ExceptionContext filterContext)
+        {            
+
+            // if the request is AJAX return JSON else view.
+            if (IsAjax(filterContext))
+            {
+                //Because its a exception raised after ajax invocation
+                //Lets return Json
+                filterContext.Result = new JsonResult()
+                {
+                    Data = filterContext.Exception.Message,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                };
+
+                filterContext.ExceptionHandled = true;
+                filterContext.HttpContext.Response.Clear();
+            }
+            else
+            {
+                filterContext.ExceptionHandled = true;
+
+                // Redirect on error:
+                filterContext.Result = RedirectToAction("Index", "Error");
+
+                // OR set the result without redirection:
+                filterContext.Result = new ViewResult
+                {
+                    ViewName = "Error"
+
+                };
+            }          
         }
     }
 }

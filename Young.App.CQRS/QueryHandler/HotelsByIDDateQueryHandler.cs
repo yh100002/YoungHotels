@@ -26,36 +26,42 @@ namespace Young.App.CQRS.QueryHandler
         public HotelsByIDDateQueryResult Retrieve(HotelsByIDDateQuery query)
         {
             HotelsByIDDateQueryResult result = new HotelsByIDDateQueryResult();
-
-            if (query == null)
+            try
             {
-                result.Hotels = _hotelsRepository.ToList();
-                foreach(var hotel in result.Hotels)
+                if (query == null)
                 {
-                    hotel.hotelRates.Clear();
+                    result.Hotels = _hotelsRepository.ToList();
+                    foreach (var hotel in result.Hotels)
+                    {
+                        hotel.hotelRates.Clear();
+                    }
+
+                    return result;
+
+                }
+                else
+                {
+                    var hotels = _hotelsRepository.Where(h => h.hotel.hotelID == query.HotelID).ToList();
+
+                    foreach (var hotel in hotels)
+                    {
+                        var rates = hotel.hotelRates.Where(r => Tools.IsBetween(r.targetDay, query.From, query.To)).ToList();
+
+                        hotel.hotelRates.Clear();
+
+                        hotel.hotelRates = rates;
+                    }
+
+                    result.Hotels = hotels;
+
                 }
 
                 return result;
-
             }
-            else
+            catch(Exception)
             {
-                var hotels = _hotelsRepository.Where(h => h.hotel.hotelID == query.HotelID).ToList();               
-
-                foreach(var hotel in hotels)
-                {                    
-                    var rates = hotel.hotelRates.Where(r => Tools.IsBetween(r.targetDay, query.From, query.To)).ToList();
-
-                    hotel.hotelRates.Clear();
-
-                    hotel.hotelRates = rates;
-                }
-
-                result.Hotels = hotels;
-
+                return result;
             }            
-
-            return result;
         }
         
     }

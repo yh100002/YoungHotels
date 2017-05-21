@@ -21,12 +21,28 @@
         }))
         {
             @Html.AntiForgeryToken()
-            @Html.DropDownListFor(x=>x.ReportMode, reportList, new { @id = "reportList" })
-            @Html.DropDownList("Hotels", hotelList, new { @id="hotelsList"})
-            @Html.EditorFor(x => x.HotelID, new { @id = "hotelID" })
-            @Html.TextBoxFor(m => m.From, "{0:yyyy-MM-dd HH:mm:ss}", new { @id = "from" })
-            @Html.TextBoxFor(m => m.To, "{0:yyyy-MM-dd HH:mm:ss}", new { @id = "to" })
-            <input type="submit" value="Query" />
+            <table class="table table-bordered table-condensed table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>REPORT MODE</th>
+                        <th>SELECT HOTEL NAME</th>
+                        <th>SELECTED HOTEL ID</th>
+                        <th>FROM</th>
+                        <th>TO</th>
+                        <th>GET COMMAND</th>
+                    </tr>
+                    <tr>
+                    <td>@Html.DropDownListFor(x => x.ReportMode, reportList, new { @id = "reportList" })</td>
+                    <td>@Html.DropDownList("Hotels", hotelList, new { @id = "hotelsList" })</td>
+                    <td>@Html.EditorFor(x => x.HotelID, new { @id = "hotelID" })</td>
+                    <td>@Html.TextBoxFor(m => m.From, "{0:yyyy-MM-dd HH:mm:ss}", new { @id = "from" })</td>
+                    <td>@Html.TextBoxFor(m => m.To, "{0:yyyy-MM-dd HH:mm:ss}", new { @id = "to" })</td>
+                    <td><input type="submit" value="Query" /></td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+           
         }
         <hr />
         <div id="hotels">

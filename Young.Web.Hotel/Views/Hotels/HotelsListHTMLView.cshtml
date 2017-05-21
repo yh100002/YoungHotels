@@ -1,13 +1,22 @@
 ﻿
 @model Young.App.CQRS.QueryResult.HotelsByIDDateQueryResult
 
-<table>
-    <!--<tr><th>Title</th><th>Completed?</th></tr> -->
-    @foreach (var t in Model.Hotels)
-    {
-        foreach (var r in t.hotelRates)
+<table class="table table-bordered table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th>HOTEL ID</th>
+            <th>HOTEL NAME</th>
+            <th>RATE NAME</th>
+            <th>RATE DATE</th>
+            <th>DESCRIPTION</th>
+        </tr>
+        @foreach (var t in Model.Hotels)
         {
-            <tr><td>@t.hotel.hotelID</td><td>@t.hotel.name</td><td>@r.rateName</td><td>@r.targetDay</td><td>@r.rateDescription</td></tr> 
+            foreach (var r in t.hotelRates)
+            {
+                <tr><td>@t.hotel.hotelID</td><td>@t.hotel.name</td><td>@r.rateName</td><td>@r.targetDay</td><td>@r.rateDescription</td></tr>
+            }
         }
-    }
-</table>
+    </thead>
+    <tbody></tbody>
+</table>  
