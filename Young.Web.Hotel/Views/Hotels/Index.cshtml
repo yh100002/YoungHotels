@@ -1,6 +1,6 @@
 ﻿@model Young.App.CQRS.Query.HotelsByIDDateQuery
 
-<h1>Hotels</h1>
+<h1>Hotel Ratings</h1>
 
 <div>       
         @{
@@ -30,14 +30,16 @@
                         <th>FROM</th>
                         <th>TO</th>
                         <th>GET COMMAND</th>
+                        <th>RESTFUL API TEST</th>
                     </tr>
                     <tr>
-                    <td>@Html.DropDownListFor(x => x.ReportMode, reportList, new { @id = "reportList" })</td>
-                    <td>@Html.DropDownList("Hotels", hotelList, new { @id = "hotelsList" })</td>
-                    <td>@Html.EditorFor(x => x.HotelID, new { @id = "hotelID" })</td>
-                    <td>@Html.TextBoxFor(m => m.From, "{0:yyyy-MM-dd HH:mm:ss}", new { @id = "from" })</td>
-                    <td>@Html.TextBoxFor(m => m.To, "{0:yyyy-MM-dd HH:mm:ss}", new { @id = "to" })</td>
-                    <td><input type="submit" value="Query" /></td>
+                        <td>@Html.DropDownListFor(x => x.ReportMode, reportList, new { @id = "reportList" })</td>
+                        <td>@Html.DropDownList("Hotels", hotelList, new { @id = "hotelsList" })</td>
+                        <td>@Html.EditorFor(x => x.HotelID, new { @id = "hotelID" })</td>
+                        <td>@Html.TextBoxFor(m => m.From, "{0:yyyy-MM-dd HH:mm:ss}", new { @id = "from" })</td>
+                        <td>@Html.TextBoxFor(m => m.To, "{0:yyyy-MM-dd HH:mm:ss}", new { @id = "to" })</td>
+                        <td><input type="submit" value="Query" /></td>
+                        <td><a href="/api/ratings/8759/2014/07/02">Format1</a>  <a href="/api/ratings/8759/2014-07-02">Format2</a></td>                       
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -59,9 +61,6 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="~/Scripts/jquery.json-viewer.js"></script>
 
-   
-    <script type="text/javascript" src="~/scripts/Hotels.js"></script>
-
     <script type="text/javascript">
         $("#from").datepicker();
         $("#to").datepicker();
@@ -79,8 +78,6 @@
         $(document).ready(function () {
             console.log("ready!");
 
-
-
             $.ajax({
                 type: "GET",
                 url: '/Hotels/InitHotelList',
@@ -96,6 +93,8 @@
                             $('#hotelsList').append($('<option>', { value: item[h].hotel.hotelID }).text(item[h].hotel.name)); 
                         });
                     });
+                    $("#hotelsList option:first").select = true;
+                    $('#HotelID').val($('#hotelsList option:selected').val());
                 }                
             });
         });
