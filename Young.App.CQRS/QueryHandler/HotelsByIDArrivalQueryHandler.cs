@@ -29,7 +29,7 @@ namespace Young.App.CQRS.QueryHandler
             HotelsByIDDateQueryResult result = new HotelsByIDDateQueryResult();
             try
             {
-                var hotels = _hotelsRepository.Where(h => h.hotel.hotelID == query.HotelID).ToList();
+                var hotels = _hotelsRepository.All().Where(h => h.hotel.hotelID == query.HotelID).ToList();
 
                 foreach (var hotel in hotels)
                 {
@@ -44,8 +44,9 @@ namespace Young.App.CQRS.QueryHandler
 
                 return result;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return result;
             }            
         }
